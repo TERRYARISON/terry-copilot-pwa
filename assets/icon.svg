@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Terry Copilot">
+  <rect width="512" height="512" rx="112" fill="#050505"/>
+  <rect x="72" y="72" width="368" height="368" rx="96" fill="#101012" stroke="#2f2f34" stroke-width="8"/>
+  <path d="M150 158h212v58h-75v190h-62V216h-75z" fill="#f4f4f5"/>
+</svg>
