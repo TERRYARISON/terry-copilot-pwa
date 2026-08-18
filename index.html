@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Copilot" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./assets/icon-192.png" />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>个人 AI Copilot</title>
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <header class="topbar">
+      <button class="icon-btn" id="historyBtn" aria-label="历史会话">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="brand">
+        <div class="brand-mark">T</div>
+        <div>
+          <strong>Copilot</strong>
+          <small id="headerSub">我的个人助理</small>
+        </div>
+      </div>
+      <button class="avatar" id="assistantBtn" aria-label="助理设置">AI</button>
+    </header>
+
+    <main class="main" id="mainView">
+      <section class="view active" data-view="chat">
+        <div class="chat-scroll" id="chatScroll">
+          <div class="welcome">
+            <h1>今天要做什么？</h1>
+            <p>对话、读文件、写作、整理知识、改代码，都从这里开始。</p>
+          </div>
+
+          <div class="message user-message">
+            <p>把今天导入的资料整理成一个可检索的知识结构。</p>
+          </div>
+
+          <div class="message ai-message">
+            <div class="ai-label">COPILOT</div>
+            <p>可以。我会先扫描资料、识别主题，再生成目录与标签。涉及批量移动或覆盖时，我会先向你确认。</p>
+            <div class="sources"><button>来源 01</button><button>来源 02</button></div>
+          </div>
+
+          <article class="task-card">
+            <div class="task-top">
+              <div>
+                <span class="task-kicker">巨型任务</span>
+                <h3>全库整理</h3>
+              </div>
+              <strong id="taskPercent">42%</strong>
+            </div>
+            <div class="progress"><i id="taskBar"></i></div>
+            <div class="task-meta">
+              <span id="taskStage">正在建立主题索引</span>
+              <button class="text-btn" id="pauseTaskBtn">暂停</button>
+            </div>
+            <div class="task-log" id="taskLog">已处理 128 / 304 个文件 · 当前：旅行资料/泰国.md</div>
+          </article>
+        </div>
+
+        <div class="composer-wrap">
+          <div class="composer-tools">
+            <button class="tool-btn" title="附件">＋</button>
+            <button class="tool-btn" title="拍照">▣</button>
+            <button class="toggle-chip" id="webToggle">联网</button>
+            <button class="toggle-chip" id="researchToggle">深度研究</button>
+            <button class="model-chip" id="modelBtn"><span id="modelName">DeepSeek</span><b>⌄</b></button>
+          </div>
+          <div class="composer">
+            <textarea id="chatInput" rows="1" placeholder="给 Copilot 发消息，输入 @ 引用知识库"></textarea>
+            <button class="send-btn" id="sendBtn" aria-label="发送">↑</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" data-view="knowledge">
+        <div class="section-head">
+          <div><p class="eyebrow">知识库</p><h2>所有资料</h2></div>
+          <button class="assist-action" data-assist="整理知识库">✦ 让助理处理</button>
+        </div>
+        <div class="searchbox">⌕ <input id="knowledgeSearch" placeholder="搜索文件、标签、内容" /></div>
+        <div class="filter-row"><button class="filter active">全部</button><button class="filter">最近</button><button class="filter">未整理</button></div>
+        <div class="file-list" id="knowledgeList"></div>
+      </section>
+
+      <section class="view" data-view="notes">
+        <div class="section-head">
+          <div><p class="eyebrow">笔记</p><h2>我的笔记本</h2></div>
+          <button class="assist-action" data-assist="整理笔记">✦ 让助理处理</button>
+        </div>
+        <div class="note-grid" id="noteGrid"></div>
+        <button class="floating-add" id="addNoteBtn">＋</button>
+      </section>
+
+      <section class="view" data-view="code">
+        <div class="section-head">
+          <div><p class="eyebrow">代码库</p><h2>项目与片段</h2></div>
+          <button class="assist-action" data-assist="检查代码库">✦ 让助理处理</button>
+        </div>
+        <div class="repo-list" id="repoList"></div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="主导航">
+      <button class="tab active" data-tab="chat"><span>◉</span><b>对话</b></button>
+      <button class="tab" data-tab="knowledge"><span>▤</span><b>知识库</b></button>
+      <button class="tab" data-tab="notes"><span>▱</span><b>笔记</b></button>
+      <button class="tab" data-tab="code"><span>⌘</span><b>代码库</b></button>
+    </nav>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+
+  <aside class="drawer left-drawer" id="historyDrawer">
+    <div class="drawer-head"><h3>历史会话</h3><button class="close-btn" data-close>×</button></div>
+    <button class="new-chat">＋ 新对话</button>
+    <div class="history-group"><small>今天</small>
+      <button class="history-item active">整理知识库</button>
+      <button class="history-item">PWA 开发记录</button>
+    </div>
+    <div class="history-group"><small>昨天</small>
+      <button class="history-item">小说素材整理</button>
+      <button class="history-item">DeepSeek API 测试</button>
+    </div>
+  </aside>
+
+  <aside class="drawer right-drawer" id="assistantDrawer">
+    <div class="drawer-head"><div><small>唯一助理</small><h3>Copilot</h3></div><button class="close-btn" data-close>×</button></div>
+    <div class="assistant-card">
+      <div class="assistant-orb">AI</div>
+      <div><strong>全局助理</strong><small>对所有内容可读、可建、可改</small></div>
+    </div>
+    <div class="settings-list">
+      <button data-panel="persona"><span>人设</span><b>›</b></button>
+      <button data-panel="memory"><span>记忆</span><b>›</b></button>
+      <button data-panel="skills"><span>技能</span><b>›</b></button>
+      <button data-panel="model"><span>模型</span><b>›</b></button>
+      <button data-panel="preferences"><span>偏好</span><b>›</b></button>
+      <button data-panel="backup"><span>备份</span><b>›</b></button>
+    </div>
+  </aside>
+
+  <div class="sheet" id="modelSheet" role="dialog" aria-modal="true">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head"><h3>选择模型</h3><button class="close-btn" data-sheet-close>×</button></div>
+    <div class="model-list">
+      <button class="model-option selected" data-model="DeepSeek"><span><strong>DeepSeek</strong><small>支持工具调用</small></span><b>✓</b></button>
+      <button class="model-option" data-model="GPT Compatible"><span><strong>GPT Compatible</strong><small>自定义 OpenAI 兼容接口</small></span><b></b></button>
+      <button class="model-option" data-model="Local Model"><span><strong>Local Model</strong><small>本地接口预留</small></span><b></b></button>
+    </div>
+    <div class="reasoning"><span>推理强度</span><div class="segmented" id="reasoningSeg"><button>Off</button><button>Low</button><button class="active">Medium</button><button>High</button><button>Max</button></div></div>
+  </div>
+
+  <div class="modal" id="confirmModal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3>确认删除？</h3>
+      <p>这是破坏性操作。删除后将从当前设备移除。</p>
+      <div class="modal-actions"><button id="cancelDelete">取消</button><button class="danger" id="confirmDelete">确认删除</button></div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
